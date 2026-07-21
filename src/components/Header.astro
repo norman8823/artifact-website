@@ -1,0 +1,42 @@
+---
+import { CTA_URL, CTA_LABEL } from "../consts";
+---
+
+<header class="site-header">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+    <a href="/" class="flex items-center gap-2.5" aria-label="ARtifact home">
+      <img
+        src="/assets/artifact-logo.png"
+        alt="ARtifact"
+        height="48"
+        class="h-11 w-auto sm:h-12"
+      />
+    </a>
+
+    <a
+      href={CTA_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="rounded-full border border-[var(--color-hairline)] px-4 py-2 text-sm font-medium text-[var(--color-ink)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+    >
+      {CTA_LABEL}
+    </a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: color-mix(in srgb, var(--color-canvas) 82%, transparent);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+  }
+  .site-header:hover,
+  .site-header:focus-within {
+    border-bottom-color: var(--color-hairline);
+  }
+</style>

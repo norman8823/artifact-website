@@ -1,0 +1,128 @@
+---
+/**
+ * The hero centerpiece: a large iPhone frame showing the app demo.
+ *
+ * We render our poster image with a prominent play button. On click we mount
+ * the Cloudflare Stream iframe and play WITH SOUND and player controls, once
+ * (no loop) — the click is the user gesture that lets it play unmuted.
+ * The video file itself is never bundled; it streams from Cloudflare.
+ */
+import DeviceFrame from "./DeviceFrame.astro";
+
+interface Props {
+  maxWidth?: number;
+}
+const { maxWidth = 400 } = Astro.props;
+
+// Sound on (no `muted`), player controls visible, plays once (no `loop`).
+const STREAM_SRC =
+  "https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/iframe?autoplay=true&controls=true";
+const POSTER = "/assets/artifact-web-video-cover.jpg";
+---
+
+<DeviceFrame maxWidth={maxWidth} label="ARtifact app demo running on iPhone">
+  <div
+    class="hero-media"
+    data-hero-media
+    data-stream-src={STREAM_SRC}
+    data-title="ARtifact app demo"
+  >
+    <img
+      class="hero-poster"
+      src={POSTER}
+      alt="ARtifact app showing an artwork in augmented reality"
+      width="390"
+      height="830"
+      fetchpriority="high"
+    />
+    <button type="button" class="hero-play" aria-label="Play the ARtifact demo">
+      <svg viewBox="0 0 24 24" aria-hidden="true" width="34" height="34">
+        <path d="M8 5.5v13l11-6.5-11-6.5Z" fill="currentColor"></path>
+      </svg>
+    </button>
+  </div>
+</DeviceFrame>
+
+<style>
+  .hero-media {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .hero-media :global(.hero-poster),
+  .hero-media :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-media :global(iframe) {
+    z-index: 2;
+  }
+
+  .hero-play {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+  .hero-play::before {
+    content: "";
+    position: absolute;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.25s ease;
+  }
+  .hero-play svg {
+    position: relative;
+    color: var(--color-accent);
+    margin-left: 4px; /* optically centre the triangle */
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hero-play:hover::before {
+    transform: scale(1.06);
+    background: #fff;
+  }
+  .hero-play:hover svg {
+    transform: scale(1.06);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-play::before,
+    .hero-play svg {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>("[data-hero-media]")
+    .forEach((container) => {
+      const src = container.dataset.streamSrc;
+      const title = container.dataset.title ?? "App demo";
+      const btn = container.querySelector<HTMLButtonElement>(".hero-play");
+      if (!src || !btn) return;
+
+      btn.addEventListener("click", () => {
+        const iframe = document.createElement("iframe");
+        iframe.src = src;
+        iframe.title = title;
+        iframe.allow =
+          "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+        iframe.setAttribute("allowfullscreen", "");
+        container.appendChild(iframe);
+        btn.remove();
+      });
+    });
+</script>

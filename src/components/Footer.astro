@@ -1,0 +1,59 @@
+---
+import { CTA_URL, CTA_LABEL, CONTACT_EMAIL, SITE } from "../consts";
+
+const year = 2026;
+---
+
+<footer class="border-t border-[var(--color-hairline)]">
+  <div
+    class="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-14 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <div class="flex items-center gap-2.5">
+      <img
+        src="/assets/artifact-logo.png"
+        alt="ARtifact"
+        height="24"
+        class="h-6 w-auto"
+      />
+    </div>
+
+    <nav aria-label="Footer">
+      <ul
+        class="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-[var(--color-muted)]"
+      >
+        <li>
+          <a
+            href="/support"
+            class="transition-colors hover:text-[var(--color-ink)]">Contact</a
+          >
+        </li>
+        <li>
+          <a
+            href="/privacy"
+            class="transition-colors hover:text-[var(--color-ink)]"
+            >Privacy Policy</a
+          >
+        </li>
+        <li>
+          <a
+            href={CTA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-medium text-[var(--color-accent)] transition-colors hover:text-[var(--color-accent-hover)]"
+            >{CTA_LABEL}</a
+          >
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="mx-auto max-w-6xl px-6 pb-10">
+    <p class="text-xs text-[var(--color-muted)]">
+      © {year}
+      {SITE.name}. Not affiliated with The Metropolitan Museum of Art.
+      <a href={`mailto:${CONTACT_EMAIL}`} class="underline-offset-2 hover:underline"
+        >{CONTACT_EMAIL}</a
+      >
+    </p>
+  </div>
+</footer>
