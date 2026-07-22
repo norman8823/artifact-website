@@ -1,0 +1,11 @@
+# Cloudflare Pages headers.
+# Always revalidate HTML and other non-hashed files so a new deploy shows up
+# immediately instead of a browser (e.g. Safari) serving a stale page that
+# points at old asset hashes.
+/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Astro's build output under /_astro/ is content-hashed (the filename changes
+# whenever the content does), so it is safe to cache forever.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
