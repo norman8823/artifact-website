@@ -5,7 +5,7 @@ import { CONTACT_EMAIL, CONTACT_FORM_ENDPOINT } from "../consts";
 ---
 
 <Base
-  title="Contact — ARtifact"
+  title="Contact · ARtifact"
   description="Get in touch with the ARtifact team."
 >
   <section class="mx-auto max-w-2xl px-6 py-24 sm:py-32">
@@ -181,10 +181,10 @@ import { CONTACT_EMAIL, CONTACT_FORM_ENDPOINT } from "../consts";
         const message =
           (form.elements.namedItem("message") as HTMLTextAreaElement)?.value ?? "";
         const body = encodeURIComponent(
-          `${message}\n\n— ${name} (${from})`,
+          `${message}\n\nFrom: ${name} (${from})`,
         );
         window.location.href = `mailto:${email}?subject=${encodeURIComponent(
-          "ARtifact — message from " + (name || "the website"),
+          "ARtifact message from " + (name || "the website"),
         )}&body=${body}`;
       };
 
@@ -193,7 +193,7 @@ import { CONTACT_EMAIL, CONTACT_FORM_ENDPOINT } from "../consts";
 
         // Honeypot tripped → silently succeed without sending.
         if ((form.elements.namedItem("_gotcha") as HTMLInputElement)?.value) {
-          setStatus("Thanks — your message has been sent.", "success");
+          setStatus("Thanks! Your message has been sent.", "success");
           form.reset();
           return;
         }
@@ -220,7 +220,7 @@ import { CONTACT_EMAIL, CONTACT_FORM_ENDPOINT } from "../consts";
           });
           if (res.ok) {
             form.reset();
-            setStatus("Thanks — your message has been sent.", "success");
+            setStatus("Thanks! Your message has been sent.", "success");
           } else {
             setStatus(
               `Something went wrong. Please email us at ${email}.`,

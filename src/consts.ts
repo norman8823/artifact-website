@@ -24,7 +24,7 @@ export const CONTACT_FORM_ENDPOINT = "https://formspree.io/f/your-form-id";
 
 export const SITE = {
   name: "ARtifact",
-  title: "ARtifact — The Museum Experience, reimagined",
+  title: "ARtifact: The Museum Experience, reimagined",
   description:
     "Explore art in the MET through guided quests and immersive augmented reality. ARtifact is an iOS museum companion, now in beta.",
 } as const;
