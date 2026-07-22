@@ -3,7 +3,6 @@ import Base from "../layouts/Base.astro";
 import HeroVideo from "../components/HeroVideo.astro";
 import StorySection from "../components/StorySection.astro";
 import StoryVideo from "../components/StoryVideo.astro";
-import DeviceFrame from "../components/DeviceFrame.astro";
 import Faq from "../components/Faq.astro";
 import { CTA_URL, CTA_LABEL } from "../consts";
 ---
@@ -116,19 +115,12 @@ import { CTA_URL, CTA_LABEL } from "../consts";
         angle, wherever you are.
       </p>
     </Fragment>
-    <DeviceFrame
+    <StoryVideo
       slot="media"
+      src="/assets/herakles-the-archer-ar.mp4"
+      label="The Herakles the Archer sculpture rendered in augmented reality beside the original, showing the accuracy of the placement"
       maxWidth={300}
-      label="The Banda Mask placed in augmented reality"
-    >
-      <img
-        src="/assets/banda-ar.jpg"
-        alt="The Banda Mask shown in augmented reality"
-        width="390"
-        height="830"
-        loading="lazy"
-      />
-    </DeviceFrame>
+    />
   </StorySection>
 
   {/* ----------------------------------------------------------------- FAQ */}
