@@ -63,7 +63,7 @@ These services may collect minimal, non-identifiable technical information (e.g.
 
 ## 5. Account and Data Deletion
 
-You may request deletion of your account and all associated data (including your email address, favorites, visit history, and quest progress) at any time by contacting us at the email address below. We will process deletion requests promptly.
+You can delete your account and all associated data (including your email address, favorites, visit history, and quest progress) at any time directly within the app. Account deletion is processed promptly and permanently — no email request is required.
 
 ---
 
@@ -77,7 +77,7 @@ You are encouraged to review this policy from time to time.
 
 ## 7. Contact Us
 
-If you have any questions or concerns about this Privacy Policy, or to request account deletion, please contact us at:
+If you have any questions or concerns about this Privacy Policy, please contact us at:
 
 **Email:** contact@artifactar.com
 
