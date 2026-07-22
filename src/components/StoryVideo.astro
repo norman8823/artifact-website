@@ -45,13 +45,35 @@ const posterSrc = `${src}#t=0.001`;
     "(prefers-reduced-motion: reduce)",
   );
 
-  const videos = document.querySelectorAll<HTMLVideoElement>(
-    "video[data-story-video]",
+  const videos = Array.from(
+    document.querySelectorAll<HTMLVideoElement>("video[data-story-video]"),
   );
 
+  const play = (v: HTMLVideoElement) => {
+    // iOS Safari blocks autoplay unless `muted` is set as a PROPERTY (the
+    // attribute alone is often ignored), so we set it again before every play.
+    v.muted = true;
+    const p = v.play();
+    if (p && typeof p.catch === "function") {
+      p.catch(() => {
+        /* still blocked (e.g. Low Power Mode); the first frame remains */
+      });
+    }
+  };
+
   if (videos.length) {
+    // Set the muted property up front — required for muted autoplay on iOS.
+    videos.forEach((v) => (v.muted = true));
+
+    // Let visitors tap any clip to start it if it isn't already playing.
+    videos.forEach((v) =>
+      v.addEventListener("click", () => {
+        if (v.paused) play(v);
+      }),
+    );
+
     if (prefersReducedMotion.matches) {
-      // Honour reduced-motion: stop the native autoplay, hold the first frame.
+      // Honour reduced-motion: hold the first frame, don't autoplay.
       videos.forEach((v) => {
         v.autoplay = false;
         v.pause();
@@ -66,18 +88,27 @@ const posterSrc = `${src}#t=0.001`;
         (entries) => {
           for (const entry of entries) {
             const video = entry.target as HTMLVideoElement;
-            if (entry.isIntersecting) {
-              video.play().catch(() => {
-                /* autoplay may be blocked; the still frame remains */
-              });
-            } else {
-              video.pause();
-            }
+            if (entry.isIntersecting) play(video);
+            else video.pause();
           }
         },
         { threshold: 0.2 },
       );
       videos.forEach((v) => observer.observe(v));
+
+      // Some mobile browsers (e.g. Low Power Mode) block muted autoplay until
+      // the first user interaction. Retry any on-screen clips once that happens.
+      const kick = () => {
+        for (const v of videos) {
+          const r = v.getBoundingClientRect();
+          if (v.paused && r.top < window.innerHeight && r.bottom > 0) play(v);
+        }
+      };
+      ["touchstart", "pointerdown", "scroll"].forEach((ev) =>
+        window.addEventListener(ev, kick, { once: true, passive: true }),
+      );
+    } else {
+      videos.forEach(play);
     }
   }
 </script>
