@@ -74,20 +74,12 @@ import { CTA_URL, CTA_LABEL } from "../consts";
         artworks, scan them as you go, and track your progress along the way.
       </p>
     </Fragment>
-    <div slot="media" class="paired">
-      <StoryVideo
-        src="/assets/browse-art-quests.mp4"
-        label="Browsing art quests in the ARtifact app"
-        maxWidth={236}
-        class="paired__front"
-      />
-      <StoryVideo
-        src="/assets/featured-artworks.mp4"
-        label="The featured artworks carousel in the ARtifact app"
-        maxWidth={236}
-        class="paired__back"
-      />
-    </div>
+    <StoryVideo
+      slot="media"
+      src="/assets/browse-art-quests.mp4"
+      label="Browsing art quests in the ARtifact app"
+      maxWidth={300}
+    />
   </StorySection>
 
   {/* Learn — browse & detail */}
@@ -103,27 +95,12 @@ import { CTA_URL, CTA_LABEL } from "../consts";
         reachable through a quest — or simply by browsing.
       </p>
     </Fragment>
-    <div slot="media" class="paired">
-      <StoryVideo
-        src="/assets/infinite-scroll.mp4"
-        label="Browsing artworks on the Explore screen"
-        maxWidth={236}
-        class="paired__front"
-      />
-      <DeviceFrame
-        maxWidth={236}
-        label="Banda Mask artwork detail page"
-        class="paired__back"
-      >
-        <img
-          src="/assets/banda-mask-detail.jpg"
-          alt="Artwork detail page for the Banda Mask"
-          width="390"
-          height="830"
-          loading="lazy"
-        />
-      </DeviceFrame>
-    </div>
+    <StoryVideo
+      slot="media"
+      src="/assets/infinite-scroll.mp4"
+      label="Browsing artworks on the Explore screen"
+      maxWidth={300}
+    />
   </StorySection>
 
   {/* See in 3D — AR */}
@@ -140,7 +117,7 @@ import { CTA_URL, CTA_LABEL } from "../consts";
     </Fragment>
     <DeviceFrame
       slot="media"
-      maxWidth={290}
+      maxWidth={300}
       label="The Banda Mask placed in augmented reality"
     >
       <img
@@ -229,22 +206,6 @@ import { CTA_URL, CTA_LABEL } from "../consts";
     50% {
       transform: translateY(4px);
     }
-  }
-
-  /* Paired media (two frames) for the Explore and Learn sections. */
-  .paired {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 1.25rem;
-    width: 100%; /* fill the media column; without this the flex item collapses */
-  }
-  .paired > * {
-    flex: 1 1 200px;
-  }
-  .paired__back {
-    margin-top: 2.5rem;
   }
 
   @media (prefers-reduced-motion: reduce) {
