@@ -22,7 +22,11 @@ const { maxWidth = 400 } = Astro.props;
 // Sound on (no `muted`), player controls visible, plays once (no `loop`).
 const STREAM_SRC =
   "https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/iframe?autoplay=true&controls=true";
-const POSTER = "/assets/artifact-web-video-cover.jpg";
+// Freeze frame = the video's OWN first frame, straight from Cloudflare Stream
+// (high quality, and identical to what the player shows on play — so there's
+// no low-res poster / high-res video mismatch). Not the compressed asset.
+const POSTER =
+  "https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/thumbnails/thumbnail.jpg?time=0s&height=1600";
 ---
 
 <DeviceFrame maxWidth={maxWidth} label="ARtifact app demo running on iPhone">
@@ -35,7 +39,7 @@ const POSTER = "/assets/artifact-web-video-cover.jpg";
     <img
       class="hero-poster"
       src={POSTER}
-      alt="ARtifact app showing an artwork in augmented reality"
+      alt="Opening frame of the ARtifact app demo"
       width="390"
       height="830"
       fetchpriority="high"
