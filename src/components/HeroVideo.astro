@@ -20,10 +20,12 @@ interface Props {
 const { maxWidth = 400 } = Astro.props;
 
 // Freeze frame = the supplied high-resolution ARtifact splash (1080×1920).
-// Playback runs from the start, so it flows straight into the app demo.
+// On play we skip the video's brief opening splash and start at the sphinx
+// (startTime=1s), so pressing play jumps straight into the AR demo instead of
+// "downgrading" back to the splash.
 // Sound on (no `muted`), player controls visible, plays once (no `loop`).
 const STREAM_SRC =
-  "https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/iframe?autoplay=true&controls=true";
+  "https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/iframe?autoplay=true&controls=true&startTime=1s";
 const POSTER = "/assets/artifact-hero-cover.jpg";
 ---
 
