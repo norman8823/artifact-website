@@ -19,14 +19,16 @@ interface Props {
 }
 const { maxWidth = 400 } = Astro.props;
 
+// The video opens on a faded splash frame (which reads as "washed out"); the
+// crisp app content begins ~2s in. We start playback at 2s AND use the 2s
+// frame as the freeze image, so the freeze and playback match and both show
+// sharp AR content immediately. `t` keeps them in lockstep — change once.
+const t = "2s";
 // Sound on (no `muted`), player controls visible, plays once (no `loop`).
-const STREAM_SRC =
-  "https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/iframe?autoplay=true&controls=true";
-// Freeze frame = the video's OWN first frame, straight from Cloudflare Stream
-// (high quality, and identical to what the player shows on play — so there's
-// no low-res poster / high-res video mismatch). Not the compressed asset.
-const POSTER =
-  "https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/thumbnails/thumbnail.jpg?time=0s&height=1600";
+const STREAM_SRC = `https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/iframe?autoplay=true&controls=true&startTime=${t}`;
+// Freeze frame = the same frame straight from Cloudflare Stream (high quality,
+// identical to what the player shows on play — no poster/video mismatch).
+const POSTER = `https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/thumbnails/thumbnail.jpg?time=${t}&height=1600`;
 ---
 
 <DeviceFrame maxWidth={maxWidth} label="ARtifact app demo running on iPhone">
@@ -39,7 +41,7 @@ const POSTER =
     <img
       class="hero-poster"
       src={POSTER}
-      alt="Opening frame of the ARtifact app demo"
+      alt="The ARtifact app placing an Egyptian sculpture in augmented reality"
       width="390"
       height="830"
       fetchpriority="high"
