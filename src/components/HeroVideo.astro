@@ -19,16 +19,16 @@ interface Props {
 }
 const { maxWidth = 400 } = Astro.props;
 
-// The video opens on a faded splash frame (which reads as "washed out"); the
-// crisp app content begins ~2s in. We start playback at 2s AND use the 2s
-// frame as the freeze image, so the freeze and playback match and both show
-// sharp AR content immediately. `t` keeps them in lockstep — change once.
-const t = "2s";
+// Freeze frame = the app's opening splash (ARtifact logo), pulled from
+// Cloudflare Stream at the video's native resolution (width=1200) so it's as
+// crisp as pausing the video — the earlier poster looked soft only because the
+// thumbnail was capped at 900px. Playback runs from the start, so the splash
+// the visitor sees is exactly the frame the video opens on.
 // Sound on (no `muted`), player controls visible, plays once (no `loop`).
-const STREAM_SRC = `https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/iframe?autoplay=true&controls=true&startTime=${t}`;
-// Freeze frame = the same frame straight from Cloudflare Stream (high quality,
-// identical to what the player shows on play — no poster/video mismatch).
-const POSTER = `https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/thumbnails/thumbnail.jpg?time=${t}&height=1600`;
+const STREAM_SRC =
+  "https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/iframe?autoplay=true&controls=true";
+const POSTER =
+  "https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b11e726d3fc51f6aa4deb989/thumbnails/thumbnail.jpg?time=0s&width=1200";
 ---
 
 <DeviceFrame maxWidth={maxWidth} label="ARtifact app demo running on iPhone">
@@ -41,7 +41,7 @@ const POSTER = `https://customer-625w28vdwzqne2e8.cloudflarestream.com/95fa3210b
     <img
       class="hero-poster"
       src={POSTER}
-      alt="The ARtifact app placing an Egyptian sculpture in augmented reality"
+      alt="The ARtifact app opening screen"
       width="390"
       height="830"
       fetchpriority="high"
