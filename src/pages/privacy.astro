@@ -1,5 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
+import BackLink from "../components/BackLink.astro";
 // Rendered verbatim from the provided policy — see src/content/privacy-policy.md.
 import { Content } from "../content/privacy-policy.md";
 ---
@@ -9,6 +10,7 @@ import { Content } from "../content/privacy-policy.md";
   description="How ARtifact collects, uses, and protects your information."
 >
   <article class="mx-auto max-w-3xl px-6 py-20 sm:py-28">
+    <BackLink class="mb-10" />
     <div class="prose">
       <Content />
     </div>

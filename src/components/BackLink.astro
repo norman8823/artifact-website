@@ -1,0 +1,32 @@
+---
+/** Subtle "back to home" link for the secondary pages. */
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
+---
+
+<a
+  href="/"
+  class:list={[
+    "group inline-flex items-center gap-2 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-ink)]",
+    className,
+  ]}
+>
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+    class="transition-transform group-hover:-translate-x-0.5"
+  >
+    <path
+      d="M15 18l-6-6 6-6"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+  Back to home
+</a>
