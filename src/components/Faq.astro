@@ -1,0 +1,120 @@
+---
+/**
+ * Minimal FAQ accordion — plain question rows separated by hairlines, no cards.
+ * Built on native <details>/<summary> so it works without JS and is accessible.
+ *
+ * Answers are written to survive the TestFlight → App Store transition as a
+ * content edit, never a structural rewrite.
+ */
+const faqs = [
+  {
+    q: "What is ARtifact?",
+    a: "ARtifact is an iOS companion for the MET museum. It turns a visit into a series of guided quests, helping you discover featured artworks, learn their stories, and see select cultural objects in augmented reality.",
+  },
+  {
+    q: "Is this only for the MET?",
+    a: "For now, yes. ARtifact currently supports The Metropolitan Museum of Art.",
+  },
+  {
+    q: "How do quests work?",
+    a: "Each quest is a themed path through the museum. Follow it to find featured artworks, scan them as you go, and watch your progress build as you explore.",
+  },
+  {
+    q: "Can I browse without doing quests?",
+    a: "Yes. You can browse artworks freely, revisit anything you've already discovered, and open any artwork's detail page without following a quest.",
+  },
+  {
+    q: "Does every artwork support AR?",
+    a: "Augmented reality is available for a curated selection of cultural objects. You can filter for AR-ready artworks on the Explore page to see everything you can view in 3D.",
+  },
+  {
+    q: "How do I join TestFlight?",
+    a: "Tap “Join the TestFlight Beta,” then install Apple's free TestFlight app if you don't already have it. You'll get access to the latest build, and we'd love to hear your feedback.",
+  },
+];
+---
+
+<dl class="faq">
+  {
+    faqs.map((item) => (
+      <details class="faq__item">
+        <summary class="faq__q">
+          <dt>{item.q}</dt>
+          <svg
+            class="faq__icon"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            aria-hidden="true"
+            fill="none"
+          >
+            <path
+              d="M8 3v10M3 8h10"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </summary>
+        <dd class="faq__a">{item.a}</dd>
+      </details>
+    ))
+  }
+</dl>
+
+<style>
+  .faq {
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    cursor: pointer;
+    list-style: none;
+    padding: 1.4rem 0.25rem;
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    color: var(--color-ink);
+    transition: color 0.25s ease;
+  }
+  .faq__q:hover {
+    color: var(--color-accent);
+  }
+  .faq__q::-webkit-details-marker {
+    display: none;
+  }
+  .faq__q dt {
+    display: inline;
+  }
+
+  .faq__icon {
+    flex: none;
+    color: var(--color-muted);
+    transition: transform 0.3s ease, color 0.25s ease;
+  }
+  .faq__item[open] .faq__icon {
+    transform: rotate(45deg);
+    color: var(--color-accent);
+  }
+
+  .faq__a {
+    margin: 0;
+    padding: 0 3rem 1.6rem 0.25rem;
+    max-width: 60ch;
+    color: var(--color-muted);
+    line-height: 1.7;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq__icon {
+      transition: none;
+    }
+  }
+</style>

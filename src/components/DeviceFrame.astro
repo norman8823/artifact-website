@@ -1,0 +1,123 @@
+---
+/**
+ * Reusable black iPhone 14 Pro frame (devices.css) used for ALL media on the
+ * site — the hero Stream embed, the story video loops, and static screenshots.
+ *
+ * devices.css renders the frame at a fixed 428×868px. We wrap it in a
+ * container and scale the whole device with `transform: scale()` so it fits
+ * any column width, down to a 375px viewport.
+ *
+ * Scale = (available width) / 428. A ResizeObserver keeps `--device-scale`
+ * in sync with the container; before JS runs we seed it from `maxWidth`
+ * (the widest the frame is ever allowed to be) so first paint is correct on
+ * wide screens and only shrinks further on narrow ones.
+ *
+ * Media goes in the default slot and should fill `.device-screen`
+ * (width/height 100%, object-fit: cover).
+ */
+interface Props {
+  /** Max rendered width of the frame in px. Scales down fluidly below this. */
+  maxWidth?: number;
+  /** Accessible label for the framed media region. */
+  label?: string;
+  class?: string;
+}
+
+const { maxWidth = 300, label, class: className = "" } = Astro.props;
+const DEVICE_W = 428;
+const initialScale = (maxWidth / DEVICE_W).toFixed(4);
+---
+
+<div
+  class:list={["frame-scale", className]}
+  style={`max-width:${maxWidth}px; --device-scale:${initialScale};`}
+  role={label ? "img" : undefined}
+  aria-label={label}
+  data-frame-scale
+>
+  <div class="frame-scale__inner">
+    <div class="device device-iphone-14-pro device-black">
+      <div class="device-frame">
+        <div class="device-screen">
+          <slot />
+        </div>
+      </div>
+      <div class="device-stripe"></div>
+      <div class="device-header"></div>
+      <div class="device-sensors"></div>
+      <div class="device-btns"></div>
+      <div class="device-power"></div>
+      <div class="device-home"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Outer box owns the layout footprint; its height tracks the frame ratio. */
+  .frame-scale {
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  .frame-scale__inner {
+    position: relative;
+    width: 100%;
+    /* 428 × 868 device, matched so scaled height reserves correct space. */
+    aspect-ratio: 428 / 868;
+  }
+
+  /* Scale the fixed-size device to the available inline width. */
+  .frame-scale__inner .device {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: top left;
+    transform: scale(var(--device-scale, 1));
+  }
+
+  /* Clip all media to the screen's rounded corners so nothing spills past
+     the iPhone frame. devices.css sets the radius but not the clip. */
+  .frame-scale__inner .device-screen {
+    overflow: hidden;
+    /* iOS/Safari honour the clip on transformed descendants only with this. */
+    isolation: isolate;
+  }
+
+  /* Media fills the screen edge-to-edge inside the rounded cutout. */
+  .device-screen :global(img),
+  .device-screen :global(video),
+  .device-screen :global(iframe) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+    display: block;
+  }
+</style>
+
+<script>
+  const DEVICE_W = 428;
+  const frames = document.querySelectorAll<HTMLElement>("[data-frame-scale]");
+
+  const apply = (el: HTMLElement) => {
+    const w = el.clientWidth;
+    if (w > 0) el.style.setProperty("--device-scale", String(w / DEVICE_W));
+  };
+
+  if (frames.length) {
+    if ("ResizeObserver" in window) {
+      const ro = new ResizeObserver((entries) => {
+        for (const entry of entries) apply(entry.target as HTMLElement);
+      });
+      frames.forEach((el) => {
+        apply(el);
+        ro.observe(el);
+      });
+    } else {
+      frames.forEach(apply);
+      window.addEventListener("resize", () => frames.forEach(apply), {
+        passive: true,
+      });
+    }
+  }
+</script>

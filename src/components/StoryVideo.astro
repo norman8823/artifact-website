@@ -1,0 +1,83 @@
+---
+/**
+ * A looping UI-recording video inside the iPhone frame.
+ *
+ * Behaviour:
+ *  - muted / loop / playsinline, native autoplay (renders like a device
+ *    running the app and paints immediately in every browser)
+ *  - pauses when scrolled off-screen, resumes when back on (saves battery)
+ *  - respects prefers-reduced-motion: JS pauses playback and shows the first
+ *    frame instead of motion
+ */
+import DeviceFrame from "./DeviceFrame.astro";
+
+interface Props {
+  src: string;
+  label: string;
+  maxWidth?: number;
+  class?: string;
+}
+
+const { src, label, maxWidth = 300, class: className = "" } = Astro.props;
+
+// Media fragment forces browsers to seek to (and paint) the opening frame,
+// so a still is visible before playback — and as the reduced-motion fallback.
+const posterSrc = `${src}#t=0.001`;
+---
+
+<DeviceFrame maxWidth={maxWidth} label={label} class={className}>
+  <video
+    class="story-video"
+    muted
+    loop
+    autoplay
+    playsinline
+    preload="metadata"
+    aria-label={label}
+    data-story-video
+  >
+    <source src={posterSrc} type="video/mp4" />
+  </video>
+</DeviceFrame>
+
+<script>
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  );
+
+  const videos = document.querySelectorAll<HTMLVideoElement>(
+    "video[data-story-video]",
+  );
+
+  if (videos.length) {
+    if (prefersReducedMotion.matches) {
+      // Honour reduced-motion: stop the native autoplay, hold the first frame.
+      videos.forEach((v) => {
+        v.autoplay = false;
+        v.pause();
+        try {
+          v.currentTime = 0;
+        } catch {
+          /* metadata may not be ready yet; the poster frame still shows */
+        }
+      });
+    } else if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            const video = entry.target as HTMLVideoElement;
+            if (entry.isIntersecting) {
+              video.play().catch(() => {
+                /* autoplay may be blocked; the still frame remains */
+              });
+            } else {
+              video.pause();
+            }
+          }
+        },
+        { threshold: 0.2 },
+      );
+      videos.forEach((v) => observer.observe(v));
+    }
+  }
+</script>

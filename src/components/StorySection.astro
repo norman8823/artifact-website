@@ -1,0 +1,52 @@
+---
+/**
+ * Alternating text / media feature row (getdailyart-style):
+ * a short header phrase, one or two sentences, and framed media.
+ * `reversed` flips the media to the left on wide screens.
+ */
+interface Props {
+  eyebrow: string;
+  title: string;
+  reversed?: boolean;
+  id?: string;
+}
+
+const { eyebrow, title, reversed = false, id } = Astro.props;
+---
+
+<section id={id} class="story">
+  <div class="mx-auto max-w-6xl px-6">
+    <div
+      class:list={[
+        "grid items-center gap-12 md:gap-16 lg:grid-cols-2",
+        reversed && "lg:[&>*:first-child]:order-2",
+      ]}
+    >
+      <div class="reveal max-w-xl">
+        <p
+          class="mb-5 text-xs font-medium uppercase tracking-[0.2em] text-[var(--color-accent)]"
+        >
+          {eyebrow}
+        </p>
+        <h2
+          class="font-serif text-3xl leading-[1.15] tracking-tight text-[var(--color-ink)] sm:text-4xl"
+        >
+          {title}
+        </h2>
+        <div class="mt-5 text-lg leading-relaxed text-[var(--color-muted)]">
+          <slot name="body" />
+        </div>
+      </div>
+
+      <div class="reveal flex justify-center lg:justify-end">
+        <slot name="media" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .story {
+    padding-block: clamp(4.5rem, 10vw, 8rem);
+  }
+</style>
