@@ -8,6 +8,9 @@
  *  - pauses when scrolled off-screen, resumes when back on (saves battery)
  *  - respects prefers-reduced-motion: JS pauses playback and shows the first
  *    frame instead of motion
+ *  - on mobile, where autoplay is unreliable, shows a small "Tap to play" hint
+ *    below the frame whenever the clip isn't playing (tapping the frame or the
+ *    hint starts it)
  */
 import DeviceFrame from "./DeviceFrame.astro";
 
@@ -25,20 +28,61 @@ const { src, label, maxWidth = 300, class: className = "" } = Astro.props;
 const posterSrc = `${src}#t=0.001`;
 ---
 
-<DeviceFrame maxWidth={maxWidth} label={label} class={className}>
-  <video
-    class="story-video"
-    muted
-    loop
-    autoplay
-    playsinline
-    preload="metadata"
-    aria-label={label}
-    data-story-video
-  >
-    <source src={posterSrc} type="video/mp4" />
-  </video>
-</DeviceFrame>
+<div
+  class:list={["story-media", className]}
+  style={`max-width:${maxWidth}px`}
+  data-story-wrap
+>
+  <DeviceFrame maxWidth={maxWidth} label={label}>
+    <video
+      class="story-video"
+      muted
+      loop
+      autoplay
+      playsinline
+      preload="metadata"
+      aria-label={label}
+      data-story-video
+    >
+      <source src={posterSrc} type="video/mp4" />
+    </video>
+  </DeviceFrame>
+  <button type="button" class="tap-hint" data-tap-hint>Tap to play</button>
+</div>
+
+<style>
+  .story-media {
+    width: 100%;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Matches the hero's "Explore" scroll cue: small, spaced, uppercase, muted. */
+  .tap-hint {
+    display: none;
+    margin-top: 0.85rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    transition: color 0.25s ease;
+  }
+  .tap-hint:hover {
+    color: var(--color-ink);
+  }
+
+  /* Only on mobile, and only while the clip isn't playing. */
+  @media (max-width: 639px) {
+    .story-media.is-paused .tap-hint {
+      display: block;
+    }
+  }
+</style>
 
 <script>
   const prefersReducedMotion = window.matchMedia(
@@ -62,15 +106,27 @@ const posterSrc = `${src}#t=0.001`;
   };
 
   if (videos.length) {
-    // Set the muted property up front — required for muted autoplay on iOS.
-    videos.forEach((v) => (v.muted = true));
+    videos.forEach((v) => {
+      v.muted = true; // required for muted autoplay on iOS
 
-    // Let visitors tap any clip to start it if it isn't already playing.
-    videos.forEach((v) =>
+      // Track play state so the "Tap to play" hint shows only when paused.
+      const wrap = v.closest<HTMLElement>("[data-story-wrap]");
+      if (wrap) {
+        wrap.classList.add("is-paused");
+        v.addEventListener("playing", () => wrap.classList.remove("is-paused"));
+        v.addEventListener("play", () => wrap.classList.remove("is-paused"));
+        v.addEventListener("pause", () => wrap.classList.add("is-paused"));
+        v.addEventListener("ended", () => wrap.classList.add("is-paused"));
+        wrap
+          .querySelector<HTMLElement>("[data-tap-hint]")
+          ?.addEventListener("click", () => play(v));
+      }
+
+      // Tapping the clip itself also starts it.
       v.addEventListener("click", () => {
         if (v.paused) play(v);
-      }),
-    );
+      });
+    });
 
     if (prefersReducedMotion.matches) {
       // Honour reduced-motion: hold the first frame, don't autoplay.
